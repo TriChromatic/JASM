@@ -3,19 +3,12 @@ package jasm;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Vector;
 
-/**
- *
- * @author trichromatic
- */
 public class Jasm {
 
-    /**
-     * @param args the command line arguments
-     */
-    Vector<StkBte> stack = new Vector();
+    ArrayList<StkBte> stack = new ArrayList();
 
     public static void main( String[] args ) {
         Jasm jasm = new Jasm();
@@ -23,8 +16,7 @@ public class Jasm {
         String txt = ".end";
         fileName = args[0];
         try {
-            BufferedReader br = new BufferedReader( new FileReader( fileName ) );
-            try {
+            try ( BufferedReader br = new BufferedReader( new FileReader( fileName ) ) ) {
                 StringBuilder sb = new StringBuilder();
                 String line = br.readLine();
 
@@ -34,8 +26,6 @@ public class Jasm {
                     line = br.readLine();
                 }
                 txt = sb.toString();
-            } finally {
-                br.close();
             }
         } catch ( IOException e ) {
             System.out.println( e.toString() );
@@ -47,14 +37,12 @@ public class Jasm {
         String[] cmd = args.split( "[.*![\n]]" ); //Pars args
         String dlm = "[,]"; //Declare delim
         int _rp = 0; //Return point
-
         /*Find where we have functions and add them to the stack*/
         for ( int i = 0; i < cmd.length; i++ ) {
             if ( cmd[i].startsWith( "@" ) ) {
                 let( cmd[i], i );
             }
         }
-
         /*Go through the commands, _pc is the place count*/
         for ( int _pc = 0; _pc < cmd.length; _pc++ ) {
             Object[] tokens = { 0, 0, 0, 0 }; //Create the array
@@ -65,7 +53,6 @@ public class Jasm {
             String param = tokens[0].toString(); //Parameter
             double aD = 0x0;
             double bD = 0x0;
-
             try {
                 aD = Double.parseDouble( get( a ).toString() );
             } catch ( NumberFormatException e ) {
@@ -74,7 +61,6 @@ public class Jasm {
                 bD = Double.parseDouble( get( b ).toString() );
             } catch ( NumberFormatException e ) {
             }
-
             switch ( param ) {
                 case "let":
                     let( a, b );
@@ -139,11 +125,17 @@ public class Jasm {
                         _pc = Integer.parseInt( get( c ).toString() );
                     }
                     break;
+                case "pus":
+                    stack.add( new StkBte( a, b ) );
+                    break;
+                case "grb":
+                    let( a, stack.get( (int) bD ).val );
+                    break;
                 case "end":
                     return 0;
             }
         }
-        System.out.println( "\nProgram quit with a status of 1!\n" ); //This is excecuted if the program doesnt end with *end
+        System.out.println( "\nProgram quit with a status of 1!\n" ); //This is excecuted if the program doesnt end with .end
         return 1;
     }
 
@@ -176,6 +168,5 @@ public class Jasm {
             this.nm = a; //Name
             this.val = b; //Value
         }
-
     }
 }
