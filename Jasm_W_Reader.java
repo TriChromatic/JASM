@@ -3,6 +3,7 @@ package jasm;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.Vector;
 
 /**
@@ -39,11 +40,11 @@ public class Jasm {
         } catch ( IOException e ) {
             System.out.println( e.toString() );
         }
-        jasm.jasm(txt);
+        jasm.jasm( txt );
     }
 
     public int jasm( String args ) {
-        String[] cmd = args.split( "[.*!-]" ); //Pars args
+        String[] cmd = args.split( "[.*![\n]]" ); //Pars args
         String dlm = "[,]"; //Declare delim
         int _rp = 0; //Return point
 
@@ -108,6 +109,10 @@ public class Jasm {
                 }
                 case "out":
                     System.out.println( get( a ) );
+                    break;
+                case "get":
+                    Scanner in = new Scanner( System.in );
+                    let( a, in.next() );
                     break;
                 case "rtn":
                     _pc = _rp;
