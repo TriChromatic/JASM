@@ -1,7 +1,7 @@
 JASM
 ====
 
-Java assembly like language and interpreter... See rasm also! This is a proof of concept.
+Java assembly like language and interpreter. See rasm also as this project was inspired by it! This is a proof of concept.
 
 Instructions
 ------------
@@ -50,3 +50,9 @@ This program asks the user for a positive integer until the user enters a negati
 let,max,int
 .rtn
 ```
+
+Build and Run
+-------------
+Make a text file with your set of instructions in it and run:
+
+`java -jar Jasm.jar /path/to/file`
