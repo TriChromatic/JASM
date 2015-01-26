@@ -1,31 +1,52 @@
-jasm
+JASM
 ====
 
 Java assembly like language and interpreter... See rasm also! This is a proof of concept.
 
-instructions
-============
+Instructions
+------------
 
-let,a,b - creates var a if there is none and sets to b, if there is, sets a to b
+Declaring a jump point looks like this: !@jumphere
 
-out,a   - prints out a
+Before every command you must put a . or a !
 
-jmp,@vr - jumps to @vr
+These are the commands:
 
-jil,a,b,@vr - jumps to @vr if a is less than b
+* `let,a,b` - creates var a if there is none and sets to b, if there is, sets a to b
+* `out,a` - prints out a
+* `jmp,@vr` - jumps to @vr
+* `jil,a,b,@vr` - jumps to @vr if a is less than b
+* `jig,a,b,@vr` - jumps to @vr if a is greater than v
+* `jie,a,b,@vr` - jumps to @vr if a is equal to b
+* `rtn` - returns to the place last jumped to
+* `add,a,b` - sets a to a + b
+* `div,a,b` - sets a to a / b
+* `mod,a,b` - sets a to a % b
+* `sub,a,b` - sets a to a - b
+* `mut,a,b` - sets a to a * b
+* `get,a`   - sets a to whatever the user inputs next
 
-jig,a,b,@vr - jumps to @vr if a is greater than v
+Example Program
+---------------
+This program asks the user for a positive integer until the user enters a negative one. When the user enteres a negative integer, it prints the biggest integer the user entered. Everything is recursion instead of looping.
+```
+!@main
+.out,Enter a positive integer
+.get,int
+.let,max,int
+.jig,int,-1,@GetPos
+.end
 
-jie,a,b,@vr - jumps to @vr if a is equal to b
+!@GetPos
+.out,Enter a new positive integer
+.get,int
+.jig,int,max,@SetMax
+.jig,int,-1,@GetPos
+.out,The biggest number you entered is:
+.out,max
+.end
 
-rtn     - returns to the place last jumped to
-
-add,a,b - sets a to a + b
-
-div,a,b - sets a to a / b
-
-mod,a,b - sets a to a % b
-
-sub,a,b - sets a to a - b
-
-mut,a,b - sets a to a * b
+!@SetMax
+let,max,int
+.rtn
+```
